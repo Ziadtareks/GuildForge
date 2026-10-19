@@ -23,7 +23,8 @@ ruff format --check .
 pytest
 ```
 
-All three must pass. CI runs the same commands on Python 3.10, 3.11, and 3.12.
+All three must pass. **Run ruff and pytest locally before opening a pull request.**
+CI runs the same commands on Python 3.10, 3.11, and 3.12.
 
 ## Project layout
 

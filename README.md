@@ -4,7 +4,6 @@
 
 **Copy a Discord server's structure to your own server in one command.**
 
-[![CI](https://github.com/Ziadtareks/GuildForge/actions/workflows/ci.yml/badge.svg)](https://github.com/Ziadtareks/GuildForge/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Ziadtareks/GuildForge?include_prereleases&sort=semver)](https://github.com/Ziadtareks/GuildForge/releases)
 [![License: MIT](https://img.shields.io/github/license/Ziadtareks/GuildForge)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
