@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and publish (leave empty to use the selected ref)"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -45,7 +51,9 @@ jobs:
       - name: Build source archive
         shell: bash
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${{ inputs.tag }}"
+          if [ -z "$TAG" ]; then TAG="${GITHUB_REF_NAME}"; fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
           git archive --format=zip --prefix="GuildForge-${TAG}/" -o "GuildForge-${TAG}-source.zip" HEAD
           ls -lh "GuildForge-${TAG}-source.zip"
 
@@ -54,7 +62,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${{ inputs.tag }}"
+          if [ -z "$TAG" ]; then TAG="${GITHUB_REF_NAME}"; fi
+          echo "Using tag: $TAG"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/GuildForge.exe "GuildForge-${TAG}-source.zip" --clobber
           else
