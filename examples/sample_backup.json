@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "tool_version": "1.0.0",
+  "created_at": "2026-10-20T12:00:00Z",
+  "source": {
+    "type": "file",
+    "guild_id": 100000000000000001,
+    "template_code": null,
+    "name": "GuildForge Demo"
+  },
+  "guild": {
+    "id": 100000000000000001,
+    "name": "GuildForge Demo",
+    "icon": null,
+    "banner": null,
+    "splash": null,
+    "premium_tier": 2,
+    "features": [
+      "COMMUNITY",
+      "NEWS",
+      "ANIMATED_ICON",
+      "BANNER",
+      "INVITE_SPLASH"
+    ],
+    "settings": {
+      "description": "A sample server structure used to test GuildForge.",
+      "verification_level": 1,
+      "default_notifications": 0,
+      "explicit_content_filter": 2,
+      "afk_channel_id": 100000000000000017,
+      "afk_timeout": 300,
+      "system_channel_id": 100000000000000012,
+      "system_channel_flags": 0,
+      "rules_channel_id": 100000000000000011,
+      "public_updates_channel_id": 100000000000000013,
+      "preferred_locale": "en-US"
+    }
+  },
+  "roles": [
+    {
+      "id": 100000000000000001,
+      "name": "@everyone",
+      "color": 0,
+      "hoist": false,
+      "mentionable": false,
+      "permissions": 104324673,
+      "position": 0,
+      "managed": false,
+      "is_everyone": true,
+      "unicode_emoji": null,
+      "icon": null
+    },
+    {
+      "id": 100000000000000004,
+      "name": "Members",
+      "color": 3066993,
+      "hoist": false,
+      "mentionable": true,
+      "permissions": 104324673,
+      "position": 1,
+      "managed": false,
+      "is_everyone": false,
+      "unicode_emoji": null,
+      "icon": null
+    },
+    {
+      "id": 100000000000000003,
+      "name": "Moderator",
+      "color": 3447003,
+      "hoist": true,
+      "mentionable": false,
+      "permissions": 1099511627775,
+      "position": 2,
+      "managed": false,
+      "is_everyone": false,
+      "unicode_emoji": "🛡️",
+      "icon": null
+    },
+    {
+      "id": 100000000000000002,
+      "name": "Admin",
+      "color": 15158332,
+      "hoist": true,
+      "mentionable": false,
+      "permissions": 8,
+      "position": 3,
+      "managed": false,
+      "is_everyone": false,
+      "unicode_emoji": "👑",
+      "icon": null
+    },
+    {
+      "id": 100000000000000005,
+      "name": "GuildForge Bot",
+      "color": 0,
+      "hoist": false,
+      "mentionable": false,
+      "permissions": 0,
+      "position": 4,
+      "managed": true,
+      "is_everyone": false,
+      "unicode_emoji": null,
+      "icon": null
+    }
+  ],
+  "channels": [
+    {
+      "id": 100000000000000010,
+      "name": "START HERE",
+      "kind": "category",
+      "position": 0,
+      "parent_id": null,
+      "topic": null,
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": null,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": []
+    },
+    {
+      "id": 100000000000000011,
+      "name": "rules",
+      "kind": "text",
+      "position": 1,
+      "parent_id": null,
+      "topic": "Read the rules before posting.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 1440,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000001,
+          "target_type": "role",
+          "allow": 1024,
+          "deny": 2048
+        }
+      ]
+    },
+    {
+      "id": 100000000000000012,
+      "name": "welcome",
+      "kind": "text",
+      "position": 2,
+      "parent_id": 100000000000000010,
+      "topic": "Say hello to the community.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 1440,
+      "default_thread_slowmode": 0,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000004,
+          "target_type": "role",
+          "allow": 379968,
+          "deny": 0
+        }
+      ]
+    },
+    {
+      "id": 100000000000000013,
+      "name": "announcements",
+      "kind": "news",
+      "position": 3,
+      "parent_id": 100000000000000010,
+      "topic": "Official updates.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 1440,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000001,
+          "target_type": "role",
+          "allow": 1024,
+          "deny": 2048
+        },
+        {
+          "target_id": 100000000000000002,
+          "target_type": "role",
+          "allow": 2048,
+          "deny": 0
+        }
+      ]
+    },
+    {
+      "id": 100000000000000014,
+      "name": "COMMUNITY",
+      "kind": "category",
+      "position": 4,
+      "parent_id": null,
+      "topic": null,
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": null,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": []
+    },
+    {
+      "id": 100000000000000015,
+      "name": "general",
+      "kind": "text",
+      "position": 5,
+      "parent_id": 100000000000000014,
+      "topic": "General chat. Be kind.",
+      "nsfw": false,
+      "slowmode": 5,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 1440,
+      "default_thread_slowmode": 0,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000004,
+          "target_type": "role",
+          "allow": 379968,
+          "deny": 0
+        },
+        {
+          "target_id": 100000000000000003,
+          "target_type": "role",
+          "allow": 8192,
+          "deny": 0
+        }
+      ]
+    },
+    {
+      "id": 100000000000000016,
+      "name": "showcase",
+      "kind": "forum",
+      "position": 6,
+      "parent_id": 100000000000000014,
+      "topic": "Share your projects and screenshots.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 4320,
+      "default_thread_slowmode": 10,
+      "default_sort_order": 0,
+      "default_forum_layout": 2,
+      "default_reaction_emoji": "👍",
+      "available_tags": [
+        {
+          "name": "Art",
+          "emoji_name": "🎨",
+          "emoji_id": null,
+          "moderated": false
+        },
+        {
+          "name": "Showcase",
+          "emoji_name": "💡",
+          "emoji_id": null,
+          "moderated": true
+        }
+      ],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000004,
+          "target_type": "role",
+          "allow": 379968,
+          "deny": 0
+        }
+      ]
+    },
+    {
+      "id": 100000000000000017,
+      "name": "General Voice",
+      "kind": "voice",
+      "position": 7,
+      "parent_id": 100000000000000014,
+      "topic": null,
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": 64000,
+      "user_limit": 10,
+      "rtc_region": null,
+      "video_quality_mode": 1,
+      "default_auto_archive_duration": null,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": [
+        {
+          "target_id": 100000000000000004,
+          "target_type": "role",
+          "allow": 1049600,
+          "deny": 0
+        }
+      ]
+    },
+    {
+      "id": 100000000000000018,
+      "name": "Town Hall",
+      "kind": "stage",
+      "position": 8,
+      "parent_id": 100000000000000014,
+      "topic": "Community AMAs and events.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": 64000,
+      "user_limit": 100,
+      "rtc_region": null,
+      "video_quality_mode": 1,
+      "default_auto_archive_duration": null,
+      "default_thread_slowmode": null,
+      "default_sort_order": null,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": []
+    },
+    {
+      "id": 100000000000000019,
+      "name": "clips",
+      "kind": "media",
+      "position": 9,
+      "parent_id": 100000000000000014,
+      "topic": "Short clips and highlights.",
+      "nsfw": false,
+      "slowmode": 0,
+      "bitrate": null,
+      "user_limit": null,
+      "rtc_region": null,
+      "video_quality_mode": null,
+      "default_auto_archive_duration": 1440,
+      "default_thread_slowmode": 0,
+      "default_sort_order": 0,
+      "default_forum_layout": null,
+      "default_reaction_emoji": null,
+      "available_tags": [],
+      "permission_overwrites": []
+    }
+  ],
+  "emojis": [],
+  "stickers": []
+}

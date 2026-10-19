@@ -1,0 +1,1 @@
+"""Discord read/write adapters."""
