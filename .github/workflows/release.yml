@@ -41,7 +41,7 @@ jobs:
           --name GuildForge
           --paths src
           --collect-all discord
-          packaging/entrypoint.py
+          src/guildforge/__main__.py
 
       - name: Smoke test the executable
         run: |
