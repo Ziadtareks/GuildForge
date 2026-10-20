@@ -29,3 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JSON validation, limit checks, template parsing, state files, and retries.
 - GitHub Actions CI (ruff + pytest on Python 3.10, 3.11, 3.12) and a release workflow that
   builds a Windows `.exe` with PyInstaller and attaches it plus the source zip to the release.
+
+### Known limitations
+
+- Messages, members, webhooks, integrations, AutoMod, events, and member-specific permission
+  overwrites are not copied.
+- Managed roles are skipped, and a bot cannot manage roles above its own highest role.
+- Community-only channels fall back on targets without Community; banners need boost level 2
+  and invite splashes need boost level 1.
+- Lottie stickers cannot be created by bots; template sources contain no settings, emojis, or stickers.
+- On a non-empty target, copied positions can shift existing items; use `--clear-target`
+  for an exact layout.
