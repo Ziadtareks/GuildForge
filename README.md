@@ -1,173 +1,180 @@
 <div align="center">
 
-# GuildForge
+<img src="docs/assets/banner.svg" alt="GuildForge — copy a Discord server's structure to your own server" width="100%">
 
 **Copy a Discord server's structure to your own server in one command.**
 
-[![Release](https://img.shields.io/github/v/release/Ziadtareks/GuildForge?include_prereleases&sort=semver)](https://github.com/Ziadtareks/GuildForge/releases)
-[![License: MIT](https://img.shields.io/github/license/Ziadtareks/GuildForge)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![License: MIT](https://img.shields.io/github/license/Ziadtareks/GuildForge?color=5865F2)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB)](https://www.python.org/downloads/)
+[![Latest release](https://img.shields.io/github/v/release/Ziadtareks/GuildForge?color=9B5CFF)](https://github.com/Ziadtareks/GuildForge/releases/latest)
+[![Stars](https://img.shields.io/github/stars/Ziadtareks/GuildForge)](https://github.com/Ziadtareks/GuildForge/stargazers)
+[![Issues](https://img.shields.io/github/issues/Ziadtareks/GuildForge)](https://github.com/Ziadtareks/GuildForge/issues)
+
+### [Download the latest release](https://github.com/Ziadtareks/GuildForge/releases/latest)
 
 </div>
 
----
+## Download
 
-## What is it
+The easiest way to use GuildForge is the **single-file Windows executable**:
 
-GuildForge is a command-line tool (Windows `.exe`, plus Linux and macOS from source)
-that copies the **structure** of one Discord server into another: roles, categories,
-channels, permission overwrites, server settings, and optionally emojis and stickers.
+**[Download `GuildForge.exe`](https://github.com/Ziadtareks/GuildForge/releases/latest)** — no Python needed.
 
-It works with three kinds of sources:
+1. Download `GuildForge.exe` from the latest release.
+2. Put it in a folder where you can create files (for example `C:\GuildForge`).
+3. Create a `.env` file next to it with your bot token (`DISCORD_TOKEN=...`), or let GuildForge ask for the token when it starts.
+4. Run it from a terminal, or double-click it for a menu.
+
+> Windows is supported by the `.exe`. Linux and macOS users can run GuildForge from source
+> (see [Quick start](#quick-start)). Prebuilt Linux/macOS binaries are tracked in
+> [issue #4](https://github.com/Ziadtareks/GuildForge/issues/4).
+
+## Contents
+
+- [Demo](#demo)
+- [What it does](#what-it-does)
+- [What it does not copy](#what-it-does-not-copy)
+- [Quick start](#quick-start)
+- [Create your bot](#create-your-bot)
+- [Usage](#usage)
+  - [List your servers](#list-your-servers)
+  - [Export a server](#export-a-server)
+  - [Import a backup](#import-a-backup)
+  - [Clone a server](#clone-a-server)
+  - [Dry run](#dry-run)
+  - [Resume an interrupted copy](#resume-an-interrupted-copy)
+  - [Interactive menu](#interactive-menu)
+- [Template mode](#template-mode)
+- [Limitations](#limitations)
+- [Troubleshooting](#troubleshooting)
+- [FAQ](#faq)
+- [Security and responsible use](#security-and-responsible-use)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Demo
+
+This is real output from `guildforge import --dry-run` with the sample backup. No token is
+needed for an offline preview, and nothing is sent to Discord.
+
+<p align="center">
+  <img src="docs/assets/demo.svg" alt="GuildForge dry-run output showing a copy plan and warnings" width="100%">
+</p>
+
+## What it does
+
+GuildForge copies the **structure** of one Discord server into another:
+
+- **Server settings** — name, icon, banner and splash (when the target boost level allows),
+  description, verification level, default notifications, explicit content filter, AFK channel
+  and timeout, system channel, rules channel, public updates channel, and preferred locale.
+- **Roles** — name, color, hoist, mentionable, permissions, order, unicode emoji or icon.
+- **Categories and channels** — text, voice, announcement, stage, forum, and media channels,
+  with names, topics, NSFW flag, slowmode, bitrate, user limit, RTC region, video quality,
+  auto-archive duration, forum tags, default reaction, position, and parent category.
+- **Permission overwrites** for roles, mapped from the old server's roles to the new ones.
+- **Emojis and stickers** — only when you pass `--emojis`.
+
+It can read three kinds of sources:
 
 | Source | How it works |
 | --- | --- |
-| **Guild ID** | The bot is a member of the source server and reads it directly. |
-| **Template link/code** | Uses Discord's public template API, so the bot does **not** need to be in the source server. |
-| **JSON backup** | Reads a file previously created by `guildforge export`. |
+| **Server ID** | The bot must be a member of the source server. |
+| **Template link or code** | Uses Discord's public template API; the bot does **not** need to be in the source. |
+| **JSON backup** | A file created earlier by `guildforge export`, or written by hand. |
 
-> GuildForge uses an **official Discord bot token** only. It is not a self-bot and it never
-> uses user tokens.
+It uses an **official Discord bot token** only. It is not a self-bot and it never uses user tokens.
 
-## Features
-
-- **One command clone** — settings, roles, categories, channels, overwrites, and more.
-- **Export/import** — save a server structure to a readable JSON backup (`schema_version` included).
-- **Template mode** — clone the structure of servers you cannot add a bot to.
-- **Dry run** — see exactly what will be created before anything is written.
-- **Resume support** — progress is saved to a state file; after a crash or `Ctrl+C`, rerun and continue.
-- **Rate-limit aware** — async everywhere, retries with backoff on HTTP 429/5xx.
-- **Discord limit checks** — warns or stops on 250 roles, 500 channels, 50 channels per category, and emoji/sticker slots.
-- **Graceful degradation** — missing boost level, Community features, permissions, or unsupported channels produce warnings, never crashes.
-- **Friendly output** — Rich tables and progress bars, plus an arrow-key menu when you double-click the `.exe`.
-
-### What it copies
-
-- Server settings: name, icon, banner and splash (only when the target boost level allows),
-  description, verification level, default notifications, explicit content filter, AFK channel
-  and timeout, system channel and flags, rules channel, public updates channel, preferred locale.
-- Roles: name, color, hoist, mentionable, permissions, order, unicode emoji or icon.
-- Channels: category, text, voice, announcement, stage, forum, and media.
-  Properties: name, topic, NSFW, slowmode, bitrate, user limit, RTC region, video quality,
-  auto-archive duration, forum tags, default reaction, position, and parent category.
-- Permission overwrites for **roles** (mapped from old role IDs to new ones).
-
-### What it does NOT copy
+## What it does not copy
 
 - Messages, threads, or message history.
 - Members, bans, or invites.
-- Bot configurations, webhooks, integrations, or application commands.
-- Member-specific permission overwrites (only role overwrites are copied).
-- Managed roles (bot roles, booster roles, integration roles).
-- Server boosts, stickers/emojis unless you pass `--emojis`.
+- Webhooks, integrations, application commands, or bot configurations.
+- Member-specific channel permission overwrites (only role overwrites are copied).
+- Managed roles (bot roles, integration roles, booster roles).
+- Server boosts, and emojis/stickers unless `--emojis` is passed.
+- AutoMod rules, events, soundboard sounds, or onboarding settings.
 
 ## Quick start
 
-1. **Create a bot** in the [Discord Developer Portal](https://discord.com/developers/applications)
-   and copy its token (see [Bot setup](#bot-setup-step-by-step)).
-2. **Install GuildForge** — download `GuildForge.exe` from the
-   [latest release](https://github.com/Ziadtareks/GuildForge/releases) or run from source.
-3. **Run it**:
+1. **Download** [`GuildForge.exe`](https://github.com/Ziadtareks/GuildForge/releases/latest)
+   (Windows), or install from source:
 
-```powershell
-GuildForge.exe clone --source 111111111111111111 --target 222222222222222222
-```
+   ```bash
+   git clone https://github.com/Ziadtareks/GuildForge.git
+   cd GuildForge
+   python -m venv .venv
+   .venv\Scripts\activate          # Windows
+   # source .venv/bin/activate     # Linux / macOS
+   pip install -e .
+   ```
 
-Prefer a menu? Double-click `GuildForge.exe` with no arguments.
+2. **Create a bot and invite it** to both servers — follow
+   [Create your bot](#create-your-bot). Put the bot role at the top of the target server.
 
-## Installation
+3. **Clone:**
 
-### Option A — Windows executable
+   ```powershell
+   .\GuildForge.exe clone --source 111111111111111111 --target 222222222222222222
+   ```
 
-1. Download `GuildForge.exe` from the [Releases](https://github.com/Ziadtareks/GuildForge/releases) page.
-2. Put it in a folder you can write to (for example `C:\GuildForge`).
-3. Create a file named `.env` next to the executable:
+   Add `--dry-run` first to preview the plan without changing anything.
 
-```dotenv
-DISCORD_TOKEN=your-bot-token-here
-```
+Python **3.10 or newer** is required for the source install.
 
-4. Open a terminal in that folder and run `.\GuildForge.exe --version`.
-
-> Some antivirus products flag PyInstaller executables as false positives. If that happens,
-> either add an exception or use Option B — see the [FAQ](#faq).
-
-### Option B — From source (recommended if you have Python)
-
-```bash
-git clone https://github.com/Ziadtareks/GuildForge.git
-cd GuildForge
-python -m venv .venv
-.venv\Scripts\activate          # Windows
-# source .venv/bin/activate     # Linux / macOS
-pip install -e .
-guildforge --version
-```
-
-Python **3.10 or newer** is required.
-
-### Token configuration
-
-GuildForge reads `DISCORD_TOKEN` from `.env` in this order:
-
-1. The current working directory.
-2. The folder that contains `GuildForge.exe` (when using the executable).
-3. `~/.guildforge/.env`.
-
-If no token is found, GuildForge asks for it with hidden input. The token is never printed,
-logged, or saved by GuildForge. `.env` is in `.gitignore`; never commit it.
-
-## Bot setup (step by step)
+## Create your bot
 
 ### 1. Create the application and bot
 
 1. Open the [Discord Developer Portal](https://discord.com/developers/applications) and click **New Application**.
-2. Give it a name (for example `GuildForge`) and create it.
-3. Open the **Bot** tab, click **Reset Token**, and copy the token. Paste it into `.env` as `DISCORD_TOKEN`.
-4. Stay on the **Bot** tab and enable these **Privileged Gateway Intents** if the panel asks:
-   - Server Members Intent: **not required**
-   - Message Content Intent: **not required**
-   - Presence Intent: **not required**
+2. Name it (for example `GuildForge`) and create it.
+3. Open the **Bot** tab, click **Reset Token**, and copy the token.
+4. Save it in a `.env` file next to the executable (or in the project root):
 
-   GuildForge only needs the standard `GUILDS` intent, which every bot has by default.
+   ```dotenv
+   DISCORD_TOKEN=your-bot-token-here
+   ```
 
-5. In **Installation** or **OAuth2 > URL Generator**, select the `bot` and `applications.commands`
-   scopes and the permissions listed below, then open the generated URL to invite the bot.
+   GuildForge never prints, logs, or saves the token. `.env` is already in `.gitignore`.
 
-### 2. Required permissions
+5. Privileged intents are **not required**. GuildForge only needs the standard `GUILDS`
+   intent, which every bot has. You do not need Message Content, Server Members, or Presence.
+
+### 2. Invite the bot
+
+Open this URL and replace `YOUR_APPLICATION_ID` with the Application ID from the
+**General Information** tab:
+
+```text
+https://discord.com/oauth2/authorize?client_id=YOUR_APPLICATION_ID&permissions=8&scope=bot
+```
+
+`permissions=8` is **Administrator**, the simplest option. If you prefer narrower permissions,
+invite with these instead:
 
 | Permission | Used for |
 | --- | --- |
-| **Administrator** (simplest) | Everything below in one permission. |
-| Manage Server | Server settings, name, icon, banner, splash. |
+| Manage Server | Server name, icon, banner, splash, and other settings. |
 | Manage Roles | Creating and editing roles and role overwrites. |
 | Manage Channels | Creating and editing categories and channels. |
 | Manage Expressions | Copying emojis and stickers (`--emojis`). |
 
-Minimal invite link (replace `<APPLICATION_ID>` with the Application ID from the **General Information** tab):
+### 3. Put the bot role on top
 
-```text
-https://discord.com/oauth2/authorize?client_id=<APPLICATION_ID>&permissions=8&scope=bot%20applications.commands
-```
+In the **target** server: **Server Settings > Roles**, drag the bot's role above all roles it
+must create or edit. Discord does not let a bot manage roles that sit above its own highest role.
+GuildForge warns you when this is a problem.
 
-`permissions=8` is Administrator. For a custom set, use the URL Generator in the Developer Portal.
+### 4. Find a server ID
 
-**Important:** after inviting the bot, open **Server Settings > Roles** and drag the bot's role
-to the top of the list. Discord only lets a bot manage roles below its own highest role, and
-GuildForge warns you when this is not the case.
+1. **User Settings > Advanced > Developer Mode**: turn it on.
+2. Right-click a server icon and choose **Copy Server ID** (17–20 digits).
 
-### 3. Find a server ID
+### 5. Notes for Community and boost features
 
-1. Discord **User Settings > Advanced > Developer Mode**: enable it.
-2. Right-click the server icon and choose **Copy Server ID** (17–20 digits).
-
-### 4. Community and boost features
-
-Announcement, stage, forum, and media channels plus rules/updates channels require
-**Community** on the target server. Banners require boost level 2 and invite splashes require
-boost level 1. When the target does not support a feature, GuildForge warns and skips or
-falls back — it never crashes.
+Announcement, stage, forum, and media channels, plus rules/updates channels, need **Community**
+enabled on the target server. Banners need boost level 2; invite splashes need boost level 1.
+When a feature is not available, GuildForge warns and skips or falls back. It does not crash.
 
 ## Usage
 
@@ -179,121 +186,60 @@ guildforge list
 guildforge --version
 ```
 
-Flags for `clone` and `import`:
+| Flag | Used by | Meaning |
+| --- | --- | --- |
+| `--dry-run` | `clone`, `import` | Check everything and print the plan without writing to Discord. |
+| `--clear-target` | `clone`, `import` | Delete target channels and non-managed roles first. You must type the server name to confirm. |
+| `--emojis` | `export`, `clone`, `import` | Also copy emojis and stickers (off by default). |
+| `--yes` | all | Skip confirmation prompts. Use with care. |
+| `--verbose` | all | Show detailed progress and full errors. |
 
-| Flag | Meaning |
-| --- | --- |
-| `--dry-run` | Validate everything and print the plan without writing to Discord. |
-| `--clear-target` | Delete target channels and non-managed roles first (asks you to type the server name). |
-| `--emojis` | Also copy emojis and stickers (off by default). |
-| `--yes` | Skip the plan confirmation prompt (use with care). |
-| `--verbose` | Show detailed progress and full tracebacks. |
-
-`export` accepts `--emojis` and `--yes` (overwrite an existing output file without asking).
-
-### List the servers the bot is in
+### List your servers
 
 ```console
 $ guildforge list
-                       Servers the bot is in
-+------------------+---------------------+---------+-------------+
-| Name             | ID                  | Members | Owner       |
-|------------------+---------------------+---------+-------------|
-| GuildForge Demo  | 100000000000000001  | 42      | <@123456>   |
-| My Test Server   | 222222222222222222  | 7       | <@654321>   |
-+------------------+---------------------+---------+-------------+
 ```
+
+Prints a table with each server's name, ID, member count, and owner. Use it to find the IDs
+you need for `clone`, `export`, and `import`.
 
 ### Export a server
 
 ```console
 $ guildforge export --source 100000000000000001 --out backup.json
-Backup written to C:\GuildForge\backup.json
-     Backup contents
-+----------------+-------+
-| Item           | Count |
-|----------------+-------|
-| Roles          | 3     |
-| Categories     | 2     |
-| Channels       | 8     |
-| Emojis         | 0     |
-| Stickers       | 0     |
-| Schema version | 1     |
-+----------------+-------+
 ```
 
-Template mode works the same way:
+GuildForge writes a readable JSON backup (`schema_version: 1`) and prints a summary of the
+roles, categories, channels, emojis, and stickers it saved. Add `--emojis` to include emojis
+and stickers. If the output file already exists, GuildForge asks before overwriting it
+(pass `--yes` to skip the question).
+
+Template sources work too:
 
 ```console
 $ guildforge export --source https://discord.new/abc123XYZ --out backup.json
 ```
 
-Note: templates store channels, roles, and overwrites, but not server settings, icons,
-banners, emojis, or stickers. GuildForge tells you this after reading a template.
+Templates contain channels, roles, and overwrites, but not server settings, icons, banners,
+emojis, or stickers. GuildForge tells you this after reading a template.
 
-### Preview an import
-
-```console
-$ guildforge import --file examples/sample_backup.json --target 222222222222222222 --dry-run
-Warning: Offline preview: no DISCORD_TOKEN was found, so the target server was
-not inspected. Target-specific warnings below assume an empty boost-level-0
-server.
-                       Copy plan
-+------------------------------------------------------+
-| Item                 | Value                         |
-|----------------------+-------------------------------|
-| Source               | GuildForge Demo (backup file) |
-| Target               | server 222222222222222222     |
-| Roles to create      | 3                             |
-| Categories to create | 2                             |
-| Channels to create   | 8                             |
-| Emojis to copy       | 0                             |
-| Stickers to copy     | 0                             |
-+------------------------------------------------------+
-Dry run complete. Nothing was sent to Discord.
-```
-
-When a token is available, the preview also checks the target server, permissions,
-boost level, and Discord limits:
+### Import a backup
 
 ```console
-$ guildforge clone --source 111111111111111111 --target 222222222222222222 --dry-run --clear-target
-                       Copy plan
-+------------------------------------------------------+
-| Item                 | Value                         |
-|----------------------+-------------------------------|
-| Source               | My Source Server (111111111111111111) |
-| Target               | My Test Server (222222222222222222)   |
-| Roles to create      | 12                            |
-| Categories to create | 4                             |
-| Channels to create   | 21                            |
-| Emojis to copy       | 0                             |
-| Stickers to copy     | 0                             |
-| Roles to delete      | 5                             |
-| Channels to delete   | 18                            |
-+------------------------------------------------------+
-Dry run complete. No changes were written to Discord.
+$ guildforge import --file backup.json --target 222222222222222222
 ```
 
-### Clone
+You can edit the JSON first: remove roles or channels you do not want, or change names and
+topics. The import validates the file before writing anything.
+
+### Clone a server
 
 ```console
 $ guildforge clone --source 111111111111111111 --target 222222222222222222
-Copy the structure into 'My Test Server'? [y/N]: y
-Resume state: C:\GuildForge\.guildforge-state.json
-...
-GuildForge report
-+----------+-------+
-| Result   | Count |
-+----------+-------+
-| Created  | 57    |
-| Skipped  | 0     |
-| Failed   | 0     |
-| Warnings | 2     |
-+----------+-------+
-Copy complete.
-Done. GuildForge 1.0.0 copied 57 item(s).
 ```
+
+GuildForge shows a plan, asks for confirmation, then copies the structure and prints a report
+with created, skipped, and failed counts. Warnings are listed at the end.
 
 Useful variants:
 
@@ -303,169 +249,174 @@ guildforge clone --source https://discord.new/abc123XYZ --target 222222222222222
 guildforge clone --source backup.json --target 222222222222222222 --clear-target --emojis
 ```
 
-### Resume after a crash or `Ctrl+C`
+`--clear-target` is destructive: it deletes channels and non-managed roles in the target
+before copying. GuildForge asks you to type the target server's name unless you pass `--yes`.
 
-Progress is written to `.guildforge-state.json` after every role, channel, and emoji.
-If a run is interrupted, rerun the same command and GuildForge offers to continue:
+### Dry run
+
+A real offline preview with the included sample backup:
 
 ```console
-$ guildforge clone --source 111111111111111111 --target 222222222222222222
-Saved progress found: 12 roles, 9 channels, 0 emojis mapped.
-Resume the previous run? [Y/n]: y
+$ guildforge import --file examples/sample_backup.json --target 123456789012345678 --dry-run
+Warning: Offline preview: no DISCORD_TOKEN was found, so the target server was not inspected.
+Target-specific warnings below assume an empty boost-level-0 server.
+                       Copy plan
++------------------------------------------------------+
+| Item                 | Value                         |
+|----------------------+-------------------------------|
+| Source               | GuildForge Demo (backup file) |
+| Target               | server 123456789012345678     |
+| Roles to create      | 3                             |
+| Categories to create | 2                             |
+| Channels to create   | 8                             |
+| Emojis to copy       | 0                             |
+| Stickers to copy     | 0                             |
++------------------------------------------------------+
+Warning: Community is not enabled on the target. Announcement, stage, forum, and media channels
+will fall back to text/voice channels: announcements, showcase, Town Hall, clips.
+Warning: Rules/updates channels require Community on the target; those settings will be skipped.
+Dry run complete. Nothing was sent to Discord.
 ```
 
-Delete the state file if you want a clean start.
+With a token, the preview also inspects the target server: its name, your permissions, its
+boost level, and Discord's limits.
+
+### Resume an interrupted copy
+
+Progress is saved to `.guildforge-state.json` after every role, channel, and emoji. If a run
+is interrupted (error, crash, or `Ctrl+C`), run the same command again. GuildForge offers to
+continue where it stopped instead of creating duplicates. Delete the state file to start fresh.
 
 ### Interactive menu
 
-Run with no arguments (or double-click the `.exe`) to get an arrow-key menu:
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│ GuildForge 1.0.0                                         │
-│ Copy a Discord server's structure to your own server.    │
-│ Bot token only. Messages, members, webhooks, and         │
-│ integrations are never copied.                           │
-└──────────────────────────────────────────────────────────┘
-? What do you want to do?  (Use arrow keys)
- » Clone a server into another server
-   Export a server to a JSON backup
-   Import a JSON backup into a server
-   List servers the bot is in
-   Exit
-```
+Run `GuildForge.exe` with no arguments (or double-click it) to get an arrow-key menu:
+Clone, Export, Import, List, or Exit. It shows a short explanation of each choice and asks for
+the values it needs.
 
 ## Template mode
 
-Templates are Discord's official way to share a server layout. GuildForge uses
-`GET /guilds/templates/{code}` through `discord.py`, so the bot does **not** need to be
-in the source server — only in the target.
+Discord templates are an official way to share a server layout. GuildForge reads them with
+the public template API, so the bot only needs to be in the **target** server.
 
 ```powershell
 guildforge clone --source https://discord.new/abc123XYZ --target 222222222222222222
 ```
 
-Limitations of templates:
+Template limits:
 
-- No server settings: name comes from the template, but icon, banner, splash, description,
-  locale, verification level, and notifications are not available.
+- No server settings. The template provides the server name, roles, channels, and overwrites,
+  but not icons, banners, splashes, descriptions, locales, verification levels, or notifications.
 - No emojis or stickers.
-- The template must still exist; old templates expire.
+- Templates can expire. If one is gone, GuildForge reports a clear error.
 
 For a full copy, add the bot to the source server and use its server ID.
 
 ## Limitations
 
-- Discord's hard limits apply: 250 roles, 500 channels, 50 channels per category, and
-  emoji/sticker slots based on boost level. GuildForge checks these before writing.
-- A bot can only manage roles below its own top role. Put the bot role at the top.
+- Discord's hard limits apply: **250 roles**, **500 channels**, **50 channels per category**,
+  and emoji/sticker slots based on the target's boost level. GuildForge checks these before writing.
+- A bot can only manage roles **below its own top role**. Put the bot role at the top.
 - Managed roles (bots, integrations, boosters) are never created or deleted.
-- Member-specific channel overwrites are intentionally skipped.
-- Message content, threads, webhooks, integrations, and events are not copied.
-- Guild name changes are rate-limited by Discord; a few setting changes may take a moment.
-- Position copying uses the source positions. On a non-empty target, existing items may
-  shift; use `--clear-target` for an exact layout.
+- Member-specific permission overwrites are skipped on purpose.
+- Messages, threads, members, webhooks, integrations, AutoMod, events, and onboarding are not copied.
+- Community-only channel types fall back on targets without Community. Banners, splashes, and
+  higher emoji limits need the matching boost level.
 - Lottie stickers cannot be created by bots and are skipped with a warning.
-- Custom emoji references in forum tags/default reactions fall back or are skipped because
-  source emoji IDs do not exist on the target.
+- Forum tags and default reactions that reference custom emoji can fall back or be skipped,
+  because source emoji IDs do not exist on the target.
+- On a non-empty target, copied positions can shift existing items. Use `--clear-target` for an
+  exact layout.
+- A few server setting changes are rate-limited by Discord and can take a moment to appear.
 
 ## Troubleshooting
 
-### "Discord rejected the bot token"
+**"Discord rejected the bot token"**
+Re-copy the token from **Developer Portal > Bot > Reset Token**. Use a bot token (three
+dot-separated parts), not a client secret or a user token. Update `.env`.
 
-Re-copy the token from **Developer Portal > Bot > Reset Token**. Make sure it is a bot token
-(three dot-separated parts) and not a client secret or a user token. Update `.env`.
+**"The bot cannot access the target server"**
+The bot is not in that server, the ID is wrong, or the invite was removed. Re-invite the bot
+using the link above.
 
-### "The bot cannot access the target server"
+**"The bot does not have Administrator permission"**
+In the target server, open **Server Settings > Roles > (bot role)** and enable
+**Administrator**, then rerun.
 
-The bot is not in the server, the ID is wrong, or the invite was revoked. Re-invite it with
-Administrator permissions.
+**Role creation fails or roles are out of order**
+Move the bot role to the top of **Server Settings > Roles**. Then rerun; GuildForge resumes
+and does not duplicate what it already created.
 
-### "The bot does not have Administrator permission"
+**Announcement/forum/stage channels became text/voice channels**
+Enable **Community** on the target: **Server Settings > Enable Community**.
 
-Open **Server Settings > Roles > (bot role) > Administrator** and enable it, then rerun.
+**Banner or invite splash was skipped**
+Banners need boost level 2; splashes need level 1. GuildForge skips them with a warning.
 
-### Roles are created in the wrong order or creation fails
+**Emojis or stickers were not copied**
+Pass `--emojis`. Slots depend on the target's boost level, and Lottie stickers cannot be
+created by bots.
 
-Discord only lets a bot manage roles below its own highest role. Drag the bot role to the
-top of **Server Settings > Roles** and rerun. GuildForge resumes instead of duplicating.
-
-### Announcement/forum/stage channels became text/voice channels
-
-Enable **Community** on the target: **Server Settings > Enable Community**. Announcement,
-forum, media, stage, and rules/updates channels need it.
-
-### Banner or invite splash was skipped
-
-Banners need boost level 2; invite splashes need level 1. GuildForge skips them with a warning.
-
-### Emojis or stickers were not copied
-
-They are opt-in. Pass `--emojis` during `export` and `clone`/`import`. Emoji slots depend on
-the target boost level, and Lottie stickers cannot be created by bots.
-
-### It says "Some steps failed"
-
-The report lists every failure. Fix the cause (usually permissions or role position) and
-rerun the same command; GuildForge resumes from the saved state.
+**The run says some steps failed**
+The final report lists each failure. Fix the cause (usually permissions or role position) and
+run the same command again. GuildForge resumes from the saved state file.
 
 ## FAQ
 
-**Is this against Discord's Terms of Service?**
-GuildForge uses the official bot API. Copying a server *you own or have permission to copy*
-is allowed. Do not use it to clone servers you do not own.
+**Is GuildForge allowed by Discord?**
+It uses the official bot API. Copying a server you own, or that you have permission to copy,
+is fine. Do not clone servers you do not own or have rights to.
 
-**Does it work without adding a bot to the source?**
-Yes, with template mode. Templates only contain channels, roles, and overwrites.
+**Why a bot token and not a login?**
+Discord does not allow tools to log in with an account. User tokens are against Discord's
+Terms of Service and can get your account banned. OAuth2 login is not a solution either: it
+cannot create roles or channels. A bot token is the only supported way to create and edit
+server structure.
+
+**Does the bot need to be in the source server?**
+Only for server ID sources. With a template link or code, the bot just needs to be in the target.
 
 **Can I undo a clone?**
-Not automatically. Use `--dry-run` first, and keep a backup of the target (export it before
-cloning). `--clear-target` is destructive and asks you to type the server name.
+Not automatically. Use `--dry-run` first, and export the target before changing it. `--clear-target`
+is destructive and asks you to type the server name.
 
-**Windows says the `.exe` is a virus.**
-PyInstaller executables are often flagged as false positives. Download only from the
-official Releases page, verify the file size, or run from source:
+**Windows says the `.exe` has a virus.**
+PyInstaller executables are often flagged as false positives. Download only from the official
+[Releases](https://github.com/Ziadtareks/GuildForge/releases) page and verify the SHA256
+checksum in the release notes, or run from source with `pip install -e .`.
 
-```bash
-pip install guildforge
-guildforge --version
-```
-
-**Where does the resume state file live?**
-`.guildforge-state.json` in the current working directory. Delete it to start fresh.
+**Where is the resume file?**
+`.guildforge-state.json` in the folder where you ran the command. Delete it to start clean.
 
 **Can I copy only part of a server?**
-Edit the exported JSON, remove the roles/channels you do not want, then import it. The file
-is plain JSON with a documented `schema_version`.
+Export it, edit the JSON (remove roles/channels), then import or clone from that file. The
+backup format is plain JSON with a `schema_version` field.
 
 **Do I need the Message Content intent?**
 No. GuildForge never reads messages.
 
+**Does it copy emojis or stickers by default?**
+No. They are opt-in with `--emojis`.
+
 ## Security and responsible use
 
-- **Own or permission:** only copy servers you own or have explicit permission to copy.
-- **Official tokens only:** GuildForge refuses to work with user tokens or self-bots.
-- **Token safety:** the token is read from `.env` or hidden input, redacted from logs, and
-  never written anywhere. Rotate the token immediately if you ever paste it into a chat,
-  screenshot, or issue.
-- **Backups are sensitive:** a backup file contains role and channel names and permission
+- **Only copy servers you own or have explicit permission to copy.**
+- **Bot tokens only.** Never use a user token or a self-bot. Rotate your token immediately if
+  you paste it into a chat, screenshot, or issue.
+- **Token safety.** GuildForge reads the token from `.env`, the environment, or hidden input.
+  It never prints it, logs it, or writes it to disk. Log output is redacted.
+- **Backups are sensitive.** A backup contains role names, channel names, topics, and permission
   structures. Treat it like configuration data.
-- **Dry run first:** `--dry-run` shows the full plan (including deletions) before writing.
-- **Rate limits:** GuildForge retries 429/5xx responses with backoff and respects Discord's
-  rate limits; avoid running multiple clones against the same server at once.
-
-## Disclaimer
-
-GuildForge is an unofficial tool and is not affiliated with, endorsed by, or sponsored by
-Discord Inc. "Discord" is a trademark of Discord Inc. You are responsible for how you use
-this tool and for complying with Discord's Terms of Service and Community Guidelines.
-The authors are not liable for any data loss, server changes, or bans resulting from use of
-this software. Always test with `--dry-run` and on a test server first.
+- **Dry run first.** `--dry-run` shows every planned change, including deletions.
+- **Rate limits.** GuildForge respects Discord's limits and retries 429/5xx responses with
+  backoff. Avoid running several copies against the same server at once.
+- GuildForge is unofficial and not affiliated with Discord Inc. You are responsible for
+  following Discord's Terms of Service and Community Guidelines.
 
 ## Contributing
 
 Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) first.
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) first. Security reports go through
+[SECURITY.md](SECURITY.md).
 
 ```bash
 pip install -e ".[dev]"
@@ -473,6 +424,9 @@ ruff check .
 ruff format --check .
 pytest
 ```
+
+See [docs/MANUAL_TEST.md](docs/MANUAL_TEST.md) for the real-server test checklist, and
+[the open issues](https://github.com/Ziadtareks/GuildForge/issues) for good first tasks.
 
 ## License
 
